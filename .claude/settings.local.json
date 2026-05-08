@@ -3,7 +3,8 @@
     "allow": [
       "Bash(security find-internet-password *)",
       "Bash(git credential *)",
-      "Bash(python3 -c \"import sys,json; prs=json.load\\(sys.stdin\\); print\\(prs[0]['html_url'] if prs else 'none'\\)\")"
+      "Bash(python3 -c \"import sys,json; prs=json.load\\(sys.stdin\\); print\\(prs[0]['html_url'] if prs else 'none'\\)\")",
+      "Bash(git lfs *)"
     ]
   }
 }
