@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace OIT
+{
 public class OrbitCamera : MonoBehaviour
 {
     [SerializeField]
@@ -32,4 +34,5 @@ public class OrbitCamera : MonoBehaviour
             transform.LookAt(lookAtTransform);
         }
     }
+}
 }
