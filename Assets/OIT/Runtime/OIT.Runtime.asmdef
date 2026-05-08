@@ -1,0 +1,22 @@
+{
+    "name": "OIT.Runtime",
+    "rootNamespace": "OIT",
+    "references": [
+        "Unity.RenderPipelines.Universal.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.render-pipelines.universal",
+            "expression": "",
+            "define": "USE_URP"
+        }
+    ],
+    "noEngineReferences": false
+}
