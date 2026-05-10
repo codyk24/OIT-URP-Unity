@@ -2,9 +2,9 @@
     "name": "OIT.Editor",
     "rootNamespace": "OIT.Editor",
     "references": [
-        "OIT.Runtime",
-        "Unity.RenderPipelines.Universal.Runtime",
-        "Unity.RenderPipelines.Universal.Editor"
+        "GUID:c05cfdd180989442aaca1300515ff760",
+        "GUID:15fc0a57446b3144c949da3e2b9737a9",
+        "GUID:c579267770062bf448e75eb160330b7f"
     ],
     "includePlatforms": [
         "Editor"

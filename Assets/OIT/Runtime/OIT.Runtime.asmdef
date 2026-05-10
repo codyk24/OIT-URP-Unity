@@ -2,7 +2,8 @@
     "name": "OIT.Runtime",
     "rootNamespace": "OIT",
     "references": [
-        "Unity.RenderPipelines.Universal.Runtime"
+        "GUID:15fc0a57446b3144c949da3e2b9737a9",
+        "GUID:df380645f10b7bc4b97d4f5eb6303d95"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -11,12 +12,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "com.unity.render-pipelines.universal",
-            "expression": "",
-            "define": "USE_URP"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }
