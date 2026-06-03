@@ -92,10 +92,10 @@ namespace OIT
             builder.SetRenderAttachment(captureHandle, 0, AccessFlags.Write);
 
             // Read from the same depth/stencil that CSGStencilPass just wrote.
-            // AccessFlags.Read = stencil test (and depth test) without any writes.
+            // AccessFlags.Read: stencil test (and depth test) without any writes.
             builder.SetRenderAttachmentDepth(resourceData.activeDepthTexture, AccessFlags.Read);
 
-            // No RendererList — must disable automatic pass culling.
+            // No RendererList — RenderGraph cannot infer output; disable automatic pass culling.
             builder.AllowPassCulling(false);
 
             builder.SetRenderFunc(static (PassData data, RasterGraphContext ctx) =>
