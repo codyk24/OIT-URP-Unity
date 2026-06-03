@@ -5,26 +5,35 @@ namespace OIT
     // Add to Assets/Settings/URP-Balanced-Renderer.asset via the Inspector
     // Renderer Features list after Unity reimports this file.
     //
-    // Future passes (CSGStencil, CapFace, OITGeometry, OITResolve, FinalComposite)
+    // Future passes (CapFace, OITGeometry, OITResolve, FinalComposite)
     // added in subsequent feature branches.
     public sealed class OITRenderFeature : ScriptableRendererFeature
     {
-        private OpaquePass _opaquePass;
+        private OpaquePass          _opaquePass;
+        private CSGStencilPass      _csgStencilPass;
+        private StencilCapturePass  _stencilCapturePass;
 
         public override void Create()
         {
-            _opaquePass = new OpaquePass();
+            _opaquePass         = new OpaquePass();
+            _csgStencilPass     = new CSGStencilPass();
+            _stencilCapturePass = new StencilCapturePass();
+
+            _csgStencilPass.TryInitialize();
+            _stencilCapturePass.TryInitialize(); // no-op when OIT/StencilProbe shader is missing
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             renderer.EnqueuePass(_opaquePass);
+            renderer.EnqueuePass(_csgStencilPass);
+            renderer.EnqueuePass(_stencilCapturePass); // no-op when StencilCapturePass.ActiveCapture is null
         }
 
         protected override void Dispose(bool disposing)
         {
-            // OpaquePass holds no unmanaged resources.
-            // Override retained as a cleanup hook for future buffer passes.
+            _csgStencilPass?.Dispose();
+            _stencilCapturePass?.Dispose();
         }
     }
 }
