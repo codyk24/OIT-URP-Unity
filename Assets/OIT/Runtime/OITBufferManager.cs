@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace OIT
 {
@@ -18,6 +19,7 @@ namespace OIT
 
         private void Awake()
         {
+            OITResources.BufferManager = this;
             long vram = simulatedGraphicsMemoryBytes > 0
                 ? simulatedGraphicsMemoryBytes
                 : (long)SystemInfo.graphicsMemorySize * 1024L * 1024L;
@@ -35,6 +37,7 @@ namespace OIT
             OITResources.HeadBuffer    = HeadBuffer;
             OITResources.NodeBuffer    = NodeBuffer;
             OITResources.AtomicCounter = AtomicCounter;
+            // StencilMaskRT is created and sized per-camera by StencilCapturePass.
         }
 
         // Resets all buffers to frame-start state. Called at Awake and by the OIT Geometry Pass each frame.
@@ -53,9 +56,18 @@ namespace OIT
 
         private void OnDestroy()
         {
+            if (OITResources.BufferManager == this)
+                OITResources.BufferManager = null;
+
             HeadBuffer?.Release();    HeadBuffer    = null;
             NodeBuffer?.Release();    NodeBuffer    = null;
             AtomicCounter?.Release(); AtomicCounter = null;
+
+            OITResources.HeadBuffer    = null;
+            OITResources.NodeBuffer    = null;
+            OITResources.AtomicCounter = null;
+
+            // StencilMaskRT lifecycle is managed by StencilCapturePass.
         }
     }
 }
