@@ -40,6 +40,7 @@ namespace OIT
             internal int            MaxNodes;
             // Null when rendering to the screen backbuffer.
             internal RenderTexture  CameraTargetRT;
+            internal string         PassName;
             // Null when no OITBufferManager is in the scene (no CSG stencil capture active).
             internal RenderTexture  StencilMaskRT;
         }
@@ -97,6 +98,7 @@ namespace OIT
             // NodeBuffer.count == screenW × screenH × MaxLayers = total node capacity.
             passData.MaxNodes      = OITResources.NodeBuffer.count;
             passData.CameraTargetRT  = cameraData.camera.targetTexture;
+            passData.PassName        = "OIT.GeometryPass";
             passData.StencilMaskRT   = OITResources.StencilMaskRT;
 
             int count = system.Objects.Count;
@@ -115,6 +117,7 @@ namespace OIT
 
             builder.SetRenderFunc(static (PassData data, UnsafeGraphContext ctx) =>
             {
+                OITPassOrder.Record(data.PassName);
                 var cmd = ctx.cmd;
 
                 // Bind one colour attachment (ColorMask 0 in shader so nothing is written)

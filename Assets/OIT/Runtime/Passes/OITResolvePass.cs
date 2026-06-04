@@ -41,6 +41,7 @@ namespace OIT
             internal RenderTexture  ResolveTexture;
             internal int            ScreenWidth;
             internal int            ScreenHeight;
+            internal string         PassName;
         }
 
         public OITResolvePass()
@@ -91,9 +92,11 @@ namespace OIT
             passData.ResolveTexture = OITResources.ResolveTexture;
             passData.ScreenWidth    = w;
             passData.ScreenHeight   = h;
+            passData.PassName       = "OIT.ResolvePass";
 
             builder.SetRenderFunc(static (PassData data, UnsafeGraphContext ctx) =>
             {
+                OITPassOrder.Record(data.PassName);
                 var cmd = ctx.cmd;
 
                 cmd.SetComputeIntParam(data.ComputeShader, k_ScreenWidth,  data.ScreenWidth);

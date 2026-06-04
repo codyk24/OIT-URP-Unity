@@ -46,6 +46,11 @@ Shader "OIT/OITGeometry"
 
         Pass
         {
+            // Custom LightMode: URP's DrawRenderers filters by ShaderTagId, so it will
+            // skip this shader in all standard transparent passes. OITGeometryPass renders
+            // these objects explicitly via cmd.DrawMesh, which bypasses the tag filter.
+            Tags { "LightMode" = "OITGeometry" }
+
             ZWrite Off
             ZTest  LEqual
             Cull   Back

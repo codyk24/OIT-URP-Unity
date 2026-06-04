@@ -13,6 +13,7 @@ namespace OIT
         private CapFacePass         _capFacePass;
         private OITGeometryPass     _oitGeometryPass;
         private OITResolvePass      _oitResolvePass;
+        private FinalCompositePass  _finalCompositePass;
 
         public override void Create()
         {
@@ -23,12 +24,14 @@ namespace OIT
             _capFacePass         = new CapFacePass();
             _oitGeometryPass     = new OITGeometryPass();
             _oitResolvePass      = new OITResolvePass();
+            _finalCompositePass  = new FinalCompositePass();
 
             _csgStencilPass.TryInitialize();
             _stencilCapturePass.TryInitialize(); // no-op when OIT/StencilProbe shader is missing
             _oitStencilMaskPass.TryInitialize();  // no-op when OIT/StencilProbe shader is missing
             _capFacePass.TryInitialize();
             _oitResolvePass.TryInitialize();
+            _finalCompositePass.TryInitialize();
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
@@ -51,6 +54,11 @@ namespace OIT
             {
                 renderer.EnqueuePass(_oitGeometryPass);
                 renderer.EnqueuePass(_oitResolvePass);
+                // FinalCompositePass is always paired with ResolvePass: RecordRenderGraph
+                // for ResolvePass runs first (same enqueue order) so ResolveTexture will
+                // be non-null by the time FinalCompositePass records. If ResolveTexture
+                // is somehow null at record time, FinalCompositePass early-returns safely.
+                renderer.EnqueuePass(_finalCompositePass);
             }
         }
 
@@ -60,6 +68,7 @@ namespace OIT
             _stencilCapturePass?.Dispose();
             _oitStencilMaskPass?.Dispose();
             _capFacePass?.Dispose();
+            _finalCompositePass?.Dispose();
         }
     }
 }

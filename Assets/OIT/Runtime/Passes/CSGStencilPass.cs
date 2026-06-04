@@ -36,6 +36,7 @@ namespace OIT
             internal Matrix4x4[] Matrices;
             internal int         Count;
             internal Material    Material;
+            internal string      PassName;
         }
 
         public CSGStencilPass()
@@ -79,6 +80,7 @@ namespace OIT
             int count = system.Cutters.Count;
             passData.Count    = count;
             passData.Material = _stencilMaterial;
+            passData.PassName = "OIT.CSGStencilPass";
             passData.Meshes   = new Mesh[count];
             passData.Matrices = new Matrix4x4[count];
 
@@ -99,6 +101,7 @@ namespace OIT
 
             builder.SetRenderFunc(static (PassData data, RasterGraphContext ctx) =>
             {
+                OITPassOrder.Record(data.PassName);
                 for (int i = 0; i < data.Count; i++)
                 {
                     if (data.Meshes[i] == null)
