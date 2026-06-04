@@ -12,6 +12,7 @@ namespace OIT
         private OITStencilMaskPass  _oitStencilMaskPass;
         private CapFacePass         _capFacePass;
         private OITGeometryPass     _oitGeometryPass;
+        private OITResolvePass      _oitResolvePass;
 
         public override void Create()
         {
@@ -21,11 +22,13 @@ namespace OIT
             _oitStencilMaskPass  = new OITStencilMaskPass();
             _capFacePass         = new CapFacePass();
             _oitGeometryPass     = new OITGeometryPass();
+            _oitResolvePass      = new OITResolvePass();
 
             _csgStencilPass.TryInitialize();
             _stencilCapturePass.TryInitialize(); // no-op when OIT/StencilProbe shader is missing
             _oitStencilMaskPass.TryInitialize();  // no-op when OIT/StencilProbe shader is missing
             _capFacePass.TryInitialize();
+            _oitResolvePass.TryInitialize();
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
@@ -47,6 +50,7 @@ namespace OIT
             if (OITResources.HeadBuffer != null)
             {
                 renderer.EnqueuePass(_oitGeometryPass);
+                renderer.EnqueuePass(_oitResolvePass);
             }
         }
 
