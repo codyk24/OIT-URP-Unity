@@ -33,9 +33,21 @@ namespace OIT
             renderer.EnqueuePass(_opaquePass);
             renderer.EnqueuePass(_csgStencilPass);
             renderer.EnqueuePass(_stencilCapturePass); // no-op unless StencilCapturePass.ActiveCapture is set
-            renderer.EnqueuePass(_oitStencilMaskPass); // no-op unless OITResources.BufferManager is present
+
+            // Only enqueue OIT geometry passes when OITBufferManager has allocated the buffers.
+            // Unconditionally enqueuing passes — even ones that return early in RecordRenderGraph —
+            // can alter URP's NativeRenderPassCompiler scheduling and affect unrelated tests.
+            if (OITResources.BufferManager != null)
+            {
+                renderer.EnqueuePass(_oitStencilMaskPass);
+            }
+
             renderer.EnqueuePass(_capFacePass);
-            renderer.EnqueuePass(_oitGeometryPass);
+
+            if (OITResources.HeadBuffer != null)
+            {
+                renderer.EnqueuePass(_oitGeometryPass);
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -260,11 +260,18 @@ namespace OIT.Tests
             Color center = tex.GetPixel(k_TexSize / 2, k_TexSize / 2);
             Object.DestroyImmediate(tex);
 
-            // If CSGStencil.shader had ColorMask != 0, the cutter fragments would have
-            // overwritten the opaque cube's grey pixels with full red (r ≈ 1).
-            Assert.Less(center.r, 0.9f,
-                $"INT-CSG-05: Centre pixel is bright red (r={center.r:F3}), indicating " +
-                "CSGStencil.shader wrote colour despite ColorMask 0.");
+            // If CSGStencil.shader had ColorMask != 0, the cutter fragments would write the
+            // sphere's red material colour (r ≈ 1, g ≈ 0, b ≈ 0) to the render target.
+            //
+            // CapFacePass legitimately runs here (the cutter IS registered with CSGSystem)
+            // and paints capColor (Color.white = r=g=b=1) at stencil-marked pixels. Pure
+            // white is NOT a failure — it means stencil worked correctly and CapFace did its
+            // job. Only pure red (r ≈ 1, g ≈ 0, b ≈ 0) indicates CSGStencil wrote colour.
+            bool isPureRed = center.r > 0.8f && center.g < 0.2f && center.b < 0.2f;
+            Assert.IsFalse(isPureRed,
+                $"INT-CSG-05: Centre pixel is pure red (r={center.r:F3} g={center.g:F3} " +
+                $"b={center.b:F3}), indicating CSGStencil.shader wrote colour despite ColorMask 0. " +
+                "White (from CapFacePass capColor) would be acceptable; pure red is not.");
         }
     }
 }
