@@ -21,6 +21,14 @@ namespace OIT
         public static RTHandle         StencilMaskHandle;
 
         /// <summary>
+        /// Screen-sized ARGBFloat <see cref="RenderTexture"/> written by
+        /// <see cref="OITResolvePass"/> each frame. Contains the sorted, composited
+        /// OIT result ready for <see cref="FinalCompositePass"/> to blend over the
+        /// opaque buffer.
+        /// </summary>
+        public static RenderTexture    ResolveTexture;
+
+        /// <summary>
         /// The active <see cref="OITBufferManager"/> in the scene.
         /// Set by <see cref="OITBufferManager.Awake"/> and cleared by
         /// <see cref="OITBufferManager.OnDestroy"/>.
