@@ -1,0 +1,19 @@
+{
+    "name": "OITViewer.Scripts",
+    "rootNamespace": "OITViewer",
+    "references": [
+        "OIT.Runtime",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

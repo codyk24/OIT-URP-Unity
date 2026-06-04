@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Default Local Group
+  m_GUID: a11f968e47dff4c0784c52c237450716
+  m_SerializeEntries:
+  - m_GUID: 38c971aeb19374b2a833b26df2d8fde3
+    m_Address: Assets/Prefabs/OIT-Objects/TransparentCube.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - oit-objects
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7322bf94d524a47a29502f4ddf209d45
+    m_Address: Assets/Prefabs/Cutters/CSGCutter.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - cutters
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ae956b4f54394e80818898d8f4d30c6
+    m_Address: Assets/UnityTechnologies/SpaceRobotKyle/Prefabs/RobotKyle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - oit-objects
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 932f1aeae9534444db7639bc999fd089
+    m_Address: Assets/Prefabs/OIT-Objects/TransparentSphere.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - oit-objects
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 08ef03cc7a4364fc2b696cd1ab2776d9, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: be7a39060b9f34beb86c51034d76b002, type: 2}
+    - {fileID: 11400000, guid: af0b20511cdd4456a8a6f230423d0108, type: 2}
