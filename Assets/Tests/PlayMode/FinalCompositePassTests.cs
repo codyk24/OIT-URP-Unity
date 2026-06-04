@@ -109,8 +109,8 @@ namespace OIT.Tests
             go.transform.position = pos;
             _extraGos.Add(go);
 
-            var mat = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "OIT_COMP_OpaqueMat" };
-            mat.color = color;
+            var mat = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "OIT_COMP_OpaqueMat" };
+            mat.SetColor("_BaseColor", color);
             _extraMats.Add(mat);
             go.GetComponent<MeshRenderer>().sharedMaterial = mat;
             return go;
