@@ -485,6 +485,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: OIT.Runtime::OIT.OrbitCamera
   lookAtTransform: {fileID: 1109760581}
   orbitSpeed: 10
+  minDistance: 1
+  maxDistance: 50
+  minPitch: -80
+  maxPitch: 80
 --- !u!114 &1115412784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -869,6 +873,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1923993984
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1923993986}
+  - component: {fileID: 1923993985}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1923993985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923993984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d65d63c8fe24179b30320b08911f1a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OITViewer.Scripts::OITViewer.InputManager
+  mainCamera: {fileID: 1115412781}
+  orbitCamera: {fileID: 1115412783}
+  scenePivot: {fileID: 1109760581}
+  orbitSensitivity: 10
+  panSensitivity: 0.01
+  zoomSensitivity: 2
+  sceneBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 5, y: 5, z: 5}
+--- !u!4 &1923993986
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923993984}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -879,3 +936,4 @@ SceneRoots:
   - {fileID: 1886831652}
   - {fileID: 1839987037}
   - {fileID: 1002588842}
+  - {fileID: 1923993986}
