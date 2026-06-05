@@ -1,9 +1,11 @@
 using System.Collections;
+using System.Diagnostics;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.TestTools;
 using OITViewer;
+using Debug = UnityEngine.Debug;
 
 namespace OIT.Tests.Performance
 {
@@ -106,6 +108,115 @@ namespace OIT.Tests.Performance
                 throw new System.MissingFieldException(target.GetType().Name, fieldName);
 
             field.SetValue(target, value);
+        }
+
+        // ────────────────────────────────────────────────────────────────────────────
+        //  PERF-INPUT-01 & PERF-INPUT-02 — Input Latency
+        // ────────────────────────────────────────────────────────────────────────────
+
+        private const double InputEventBudgetMs  = 16.0;   // PERF-INPUT-01: each drag event
+        private const double FrameBudgetMs       = 33.3;   // PERF-INPUT-02: no frame exceeds this
+        private const int    DragEventCount      = 100;
+        private const int    ContinuousDragFrames = 60;
+
+        /// <summary>
+        /// PERF-INPUT-01: 100 simulated cutter drag events (input → transform update) must each
+        /// complete in under 16 ms.
+        ///
+        /// Uses InputManager.InjectCutterDrag(Transform, Vector3) to bypass the Input API so the
+        /// test is deterministic. The cutter starts at the origin; small incremental deltas are
+        /// applied, each within sceneBounds, to keep SnapCutterToBounds from doing extra work.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator PERF_INPUT_01_CutterDragEvent_Under16ms()
+        {
+            var (inputManager, cutterTransform, root) = BuildInputManagerFixture();
+
+            var sw = new Stopwatch();
+            var delta = new Vector3(0.01f, 0f, 0f);
+
+            for (int i = 0; i < DragEventCount; i++)
+            {
+                sw.Restart();
+                inputManager.InjectCutterDrag(cutterTransform, delta);
+                sw.Stop();
+
+                double elapsedMs = sw.Elapsed.TotalMilliseconds;
+                Assert.Less(elapsedMs, InputEventBudgetMs,
+                    $"[PERF-INPUT-01] Event {i + 1}/{DragEventCount} took {elapsedMs:F3} ms " +
+                    $"(budget: {InputEventBudgetMs} ms).");
+            }
+
+            Debug.Log($"[PERF-INPUT-01] All {DragEventCount} cutter drag events completed within {InputEventBudgetMs} ms each.");
+
+            Object.Destroy(root);
+            yield return null;
+        }
+
+        /// <summary>
+        /// PERF-INPUT-02: During a 60-frame simulated continuous drag no frame may take more
+        /// than 33.3 ms (i.e. no frame drop below 30 fps).
+        ///
+        /// Each frame: record wall-clock time at frame start, inject one cutter drag event, yield
+        /// one frame, then measure elapsed wall-clock time. The measured window includes Unity's
+        /// own frame overhead, giving a conservative real-world budget.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator PERF_INPUT_02_ContinuousDrag_NoFrameExceeds33ms()
+        {
+            var (inputManager, cutterTransform, root) = BuildInputManagerFixture();
+
+            var sw    = new Stopwatch();
+            var delta = new Vector3(0.01f, 0f, 0f);
+
+            for (int frame = 0; frame < ContinuousDragFrames; frame++)
+            {
+                sw.Restart();
+
+                inputManager.InjectCutterDrag(cutterTransform, delta);
+
+                yield return null;   // advance one Unity frame
+
+                sw.Stop();
+                double frameMs = sw.Elapsed.TotalMilliseconds;
+
+                Assert.Less(frameMs, FrameBudgetMs,
+                    $"[PERF-INPUT-02] Frame {frame + 1}/{ContinuousDragFrames} took {frameMs:F3} ms " +
+                    $"(budget: {FrameBudgetMs} ms).");
+            }
+
+            Debug.Log($"[PERF-INPUT-02] All {ContinuousDragFrames} drag frames completed within {FrameBudgetMs} ms each.");
+
+            Object.Destroy(root);
+            yield return null;
+        }
+
+        /// <summary>
+        /// Builds a minimal InputManager + cutter Transform hierarchy for input performance tests.
+        /// sceneBounds covers [−5,5] on each axis so SnapCutterToBounds is exercised without
+        /// clamping (cutter stays near origin with the small deltas used in the tests).
+        /// </summary>
+        private static (InputManager inputManager, Transform cutter, GameObject root) BuildInputManagerFixture()
+        {
+            var root = new GameObject("InputPerfTest_Root");
+
+            // Cutter handle
+            var cutterGo = new GameObject("Cutter");
+            cutterGo.transform.SetParent(root.transform, false);
+            cutterGo.AddComponent<CutterHandle>();
+
+            // InputManager — no camera or OrbitCamera needed for InjectCutterDrag path.
+            var imGo = new GameObject("InputManager");
+            imGo.transform.SetParent(root.transform, false);
+            var im = imGo.AddComponent<InputManager>();
+
+            // Wire sceneBounds via reflection (mirrors the pattern in BuildSceneManagerFixture).
+            var boundsField = typeof(InputManager).GetField(
+                "sceneBounds",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            boundsField?.SetValue(im, new Bounds(Vector3.zero, Vector3.one * 10f));
+
+            return (im, cutterGo.transform, root);
         }
     }
 }

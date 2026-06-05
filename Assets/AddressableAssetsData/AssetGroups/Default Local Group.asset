@@ -31,7 +31,7 @@ MonoBehaviour:
     m_Address: Assets/UnityTechnologies/SpaceRobotKyle/Prefabs/RobotKyle.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
-    - oit-objects
+    - default
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 932f1aeae9534444db7639bc999fd089
     m_Address: Assets/Prefabs/OIT-Objects/TransparentSphere.prefab
