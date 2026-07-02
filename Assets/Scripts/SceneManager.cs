@@ -12,7 +12,7 @@ namespace OITViewer
     /// wires the OrbitCamera pivot, and hides the loading screen when ready.
     /// Must complete within 5 s to satisfy PERF-STARTUP-01.
     /// </summary>
-    public sealed class SceneManager : MonoBehaviour
+    public sealed class SceneManager : BaseMonoSingleton<SceneManager>
     {
         [Header("Addressable Keys")]
         [Tooltip("Addressable label or keys for transparent OIT objects to spawn.")]
@@ -58,6 +58,7 @@ namespace OITViewer
                     {
                         var go = Instantiate(prefab, scenePivot);
                         _spawnedObjects.Add(go);
+                        go.transform.position = new Vector3(_spawnedObjects.Count, go.transform.position.y, go.transform.position.z); // offset cutters to avoid overlapping with OIT objects
                     }
                 }
                 else
@@ -80,6 +81,7 @@ namespace OITViewer
                     {
                         var go = Instantiate(prefab, scenePivot);
                         _spawnedObjects.Add(go);
+                        go.transform.position = new Vector3(_spawnedObjects.Count, go.transform.position.y, go.transform.position.z); // offset cutters to avoid overlapping with OIT objects
                     }
                 }
                 else
@@ -115,8 +117,10 @@ namespace OITViewer
                 Debug.LogWarning("[SceneManager] Could not wire OrbitCamera pivot: 'lookAtTransform' field not found.");
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+
             foreach (var go in _spawnedObjects)
             {
                 if (go != null)
