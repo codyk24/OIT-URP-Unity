@@ -26,6 +26,7 @@ namespace OIT
     public sealed class OITGeometryPass : ScriptableRenderPass
     {
         private static readonly int s_StencilMaskId = Shader.PropertyToID("_OIT_StencilMask");
+        private static readonly int s_BaseColorId   = Shader.PropertyToID("_BaseColor");
 
         private class PassData
         {
@@ -35,6 +36,8 @@ namespace OIT
             internal Mesh[]         Meshes;
             internal Matrix4x4[]    Matrices;
             internal Material[]     Materials;
+            internal Color[]        BaseColors;
+            internal int            BaseColorId;
             internal int            Count;
             internal int            ScreenWidth;
             internal int            MaxNodes;
@@ -102,10 +105,12 @@ namespace OIT
             passData.StencilMaskRT   = OITResources.StencilMaskRT;
 
             int count = system.Objects.Count;
-            passData.Count     = count;
-            passData.Meshes    = new Mesh[count];
-            passData.Matrices  = new Matrix4x4[count];
-            passData.Materials = new Material[count];
+            passData.BaseColorId = s_BaseColorId;
+            passData.Count       = count;
+            passData.Meshes     = new Mesh[count];
+            passData.Matrices   = new Matrix4x4[count];
+            passData.Materials  = new Material[count];
+            passData.BaseColors = new Color[count];
 
             for (int i = 0; i < count; i++)
             {
@@ -113,6 +118,14 @@ namespace OIT
                 passData.Meshes[i]    = obj.SharedMesh;
                 passData.Matrices[i]  = obj.LocalToWorld;
                 passData.Materials[i] = obj.SharedMaterial;
+
+                // Preserve the material's RGB; override alpha from OITObject so the
+                // slider value reaches the shader without mutating the shared material.
+                Color baseColor = obj.SharedMaterial != null
+                    ? obj.SharedMaterial.GetColor(s_BaseColorId)
+                    : Color.white;
+                baseColor.a             = obj.alpha;
+                passData.BaseColors[i]  = baseColor;
             }
 
             builder.SetRenderFunc(static (PassData data, UnsafeGraphContext ctx) =>
@@ -156,11 +169,13 @@ namespace OIT
                 if (data.StencilMaskRT != null)
                     cmd.SetGlobalTexture(s_StencilMaskId, data.StencilMaskRT);
 
+                var mpb = new MaterialPropertyBlock();
                 for (int i = 0; i < data.Count; i++)
                 {
                     if (data.Meshes[i] == null || data.Materials[i] == null)
                         continue;
-                    cmd.DrawMesh(data.Meshes[i], data.Matrices[i], data.Materials[i], 0, 0);
+                    mpb.SetColor(data.BaseColorId, data.BaseColors[i]);
+                    cmd.DrawMesh(data.Meshes[i], data.Matrices[i], data.Materials[i], 0, 0, mpb);
                 }
 
                 cmd.ClearRandomWriteTargets();

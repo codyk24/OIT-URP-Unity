@@ -14,7 +14,7 @@ namespace OIT
         /// <summary>Active OITSystem in the scene, or null if none exists.</summary>
         public static OITSystem Instance => _instance;
 
-        private readonly List<OITObject> _objects = new List<OITObject>();
+        [SerializeField] private List<OITObject> _objects = new List<OITObject>();
 
         /// <summary>Read-only list of registered OIT objects for use by render passes.</summary>
         public IReadOnlyList<OITObject> Objects => _objects;
